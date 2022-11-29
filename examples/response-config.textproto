@@ -1,0 +1,49 @@
+payload {
+  delivery_channel: 1
+  sender {
+    din: "<PLACEHOLDER DIN>"
+  }
+  recipient {
+    local: 1
+  }
+  wc {
+    get_config_response {
+      settings {
+        max_output_current_amps: 32
+        gmi_mode: 1
+        country: "AU"
+        third_party_vehicle_mode: 1
+      }
+      wifi_config {
+        ssid: "xxxxxxx"
+      }
+      wifi {
+        mac_address: "xxxx"
+        enabled: true
+        active_route: true
+        ipv4_config {
+          dhcp_enabled: true
+          address: 0
+          subnet_mask: 0
+          gateway: 0
+          dns: 0
+        }
+        connectivity_status {
+          connected_physical: true
+          rssi {
+            value: -34
+          }
+          snr {
+            value: 61
+          }
+        }
+      }
+      charge_schedule {
+        error: 1
+      }
+    }
+  }
+}
+external_auth {
+  type: 1
+}

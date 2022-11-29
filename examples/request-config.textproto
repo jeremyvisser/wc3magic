@@ -1,0 +1,16 @@
+payload {
+  delivery_channel: 1
+  sender {
+    local: 1
+  }
+  recipient {
+    din: "<ENTER DIN FROM /tedapi/din HERE>"
+  }
+  wc {
+    get_config_request {
+    }
+  }
+}
+external_auth {
+  type: 1
+}

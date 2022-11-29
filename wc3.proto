@@ -1,0 +1,249 @@
+syntax = "proto3";
+
+message AuthEnvelope {
+  MessageEnvelope payload = 1;
+
+  oneof auth {
+    ExternalAuth external_auth = 2;
+  }
+
+  message ExternalAuth {
+    int32 type = 1;
+  }
+}
+
+message MessageEnvelope {
+  int32 delivery_channel = 1;
+
+  Participant sender = 2;
+  Participant recipient = 3;
+
+  message Participant {
+    oneof id {
+      string din = 1;
+      int32 tesla_service = 2;
+      int32 local = 3;
+      int32 authorized_client = 4;
+    }
+  }
+
+  oneof payload {
+    CommonMessages common = 4;
+    WCMessages wc = 6;
+  }
+}
+
+message CommonMessages {
+  oneof message {
+    ErrorResponse error_response = 1;
+    CommonAPIGetSystemInfoRequest get_system_info_request = 2;
+    CommonAPIGetSystemInfoResponse get_system_info_response = 3;
+  }
+}
+
+message ErrorResponse {
+  // TODO
+}
+
+message CommonAPIGetSystemInfoRequest {
+  // empty
+}
+
+message WCMessages {
+  oneof message {
+    WCAPIGetVitalsRequest get_vitals_request = 1;
+    WCAPIGetVitalsResponse get_vitals_response = 2;
+    
+    WCAPIGetConfigRequest get_config_request = 5;
+    WCAPIGetConfigResponse get_config_response = 6;
+    
+    WCAPIGetLoadSharingNetworkStateRequest get_load_sharing_network_state_request = 11;
+    WCAPIGetLoadSharingNetworkStateResponse get_load_sharing_network_state_response = 12;
+  }
+}
+
+message WCAPIGetVitalsRequest {
+  // empty
+}
+message WCAPIGetVitalsResponse {
+  // TODO
+}
+
+message WCAPIGetConfigRequest {
+  // empty
+}
+message WCAPIGetConfigResponse {
+  WCSettings settings = 1;
+  WifiConfig wifi_config = 2;
+  NetworkInterface wifi = 3;
+  repeated WCMeterInterface meters = 4;
+  WCChargeScheduleConfigStatus charge_schedule = 5;
+}
+
+message WCAPIGetLoadSharingNetworkStateRequest {
+  // empty
+}
+message WCAPIGetLoadSharingNetworkStateResponse {
+  // TODO
+}
+
+message CommonAPIGetSystemInfoResponse {
+  EcuId device_id = 1;
+  message EcuId {
+    string part_number = 1;
+    string serial_number = 2;
+  }
+
+  string din = 2;
+
+  FirmwareVersion firmware_version = 3;
+  message FirmwareVersion {
+    string version = 1;
+    bytes githash = 2;
+  }
+
+  SystemUpdate system_update = 5;
+  int32 device_type = 6;
+}
+
+message WCChargeScheduleConfigStatus {
+  WCChargeScheduleConfig config = 1;
+  int32 error = 2;
+}
+
+message WCChargeScheduleConfig {
+  bool enable_schedule = 1;
+
+  WCChargeSchedule schedule = 2;
+  message WCChargeSchedule {
+    repeated WCChargeScheduleDayTimePeriods day_time_periods = 1;
+    message WCChargeScheduleDayTimePeriods {
+      // TODO
+    }
+  }
+
+  WCChargeScheduleDelay delay = 3;
+  message WCChargeScheduleDelay {
+    uint32 max_delay_seconds = 1;
+  }
+}
+
+
+message WifiConfig {
+  string ssid = 1;
+  WifiPassword password = 2;
+  message WifiPassword {
+    string value = 1;
+  }
+  int32 security_type = 3;
+}
+
+message WifiNetwork {
+  string ssid = 1;
+  sint32 rssi_value = 2;
+  Rssi rssi = 3;
+  int32 security_type = 4;
+}
+
+message NetworkInterface {
+  bytes mac_address = 1;
+  bool enabled = 2;
+  bool active_route = 3;
+  
+  NetworkInterfaceIPv4Config ipv4_config = 4;
+  message NetworkInterfaceIPv4Config {
+    reserved 1;
+    bool dhcp_enabled = 2;
+    fixed32 address = 3;
+    fixed32 subnet_mask = 4;
+    fixed32 gateway = 5;
+    repeated fixed32 dns = 6;
+  }
+
+  NetworkConnectivityStatus connectivity_status = 5;
+  message NetworkConnectivityStatus {
+    bool connected_physical = 1;
+    bool connected_internet = 2;
+    bool connected_tesla = 3;
+    Rssi rssi = 4;
+    Int32Value snr = 5;
+  }
+}
+
+message WCSettings {
+  int32 max_output_current_amps = 1;
+  int32 gmi_mode = 2;
+  string country = 3;
+  int32 third_party_vehicle_mode = 4;
+  WCLoadSharingConfig load_sharing_config = 5;
+}
+
+message WCLoadSharingConfig {
+  uint32 version = 1;
+  repeated uint32 participant_dins = 2;
+  oneof network_limit {
+    WCLoadSharingFixedLimitConfig fixed_limit = 3;
+  }
+  uint32 settings = 4;
+  bool charging_enabled = 5;
+}
+
+message WCLoadSharingSettings {
+  oneof network_limit {
+    WCLoadSharingFixedLimitConfig fixed_limit = 1;
+    WCLoadSharingConductorLimitConfig conductor_limit = 2;
+  }
+}
+
+message WCLoadSharingFixedLimitConfig {
+  uint32 network_limit_amps = 1;
+}
+
+message WCLoadSharingConductorLimitConfig {
+  uint32 conductor_limit_amps = 1;
+}
+
+message WCMeterInterface {
+  // TODO
+}
+
+message WCGenealogy {
+  // TODO
+}
+
+message SystemUpdate {
+  // TODO
+}
+
+message WCLifetimeStats {
+  uint64 uptime_s = 1;
+  uint32 alert_count = 2;
+  uint32 contactor_cycles = 3;
+  uint32 contactor_cycles_loaded = 4;
+  uint32 connector_cycles = 5;
+  uint32 thermal_foldbacks = 6;
+  float avg_startup_temp_c = 7;
+  uint32 charge_starts = 8;
+  uint64 charging_time_s = 9;
+  AccumulatedEnergy charging_energy = 10;
+  message AccumulatedEnergy {
+    float energy_wh = 1;
+    int32 accumulation_type = 2;
+    uint64 period_s = 3;
+  }
+}
+
+
+message Rssi {
+  sint32 value = 1;
+  UInt32Value signal_strength_percent = 2;
+}
+
+message Int32Value {
+  int32 value = 1;
+}
+
+message UInt32Value {
+  uint32 value = 1;
+}
+
