@@ -53,10 +53,13 @@ message WCMessages {
   oneof message {
     WCAPIGetVitalsRequest get_vitals_request = 1;
     WCAPIGetVitalsResponse get_vitals_response = 2;
-    
+
     WCAPIGetConfigRequest get_config_request = 5;
     WCAPIGetConfigResponse get_config_response = 6;
-    
+
+    WCAPIConfigureSettingsRequest configure_settings_request = 7;
+    WCAPIConfigureSettingsResponse configure_settings_response = 8;
+
     WCAPIGetLoadSharingNetworkStateRequest get_load_sharing_network_state_request = 11;
     WCAPIGetLoadSharingNetworkStateResponse get_load_sharing_network_state_response = 12;
   }
@@ -149,7 +152,7 @@ message NetworkInterface {
   bytes mac_address = 1;
   bool enabled = 2;
   bool active_route = 3;
-  
+
   NetworkInterfaceIPv4Config ipv4_config = 4;
   message NetworkInterfaceIPv4Config {
     reserved 1;
@@ -168,6 +171,14 @@ message NetworkInterface {
     Rssi rssi = 4;
     Int32Value snr = 5;
   }
+}
+
+message WCAPIConfigureSettingsRequest {
+  WCSettings settings = 1;
+}
+
+message WCAPIConfigureSettingsResponse {
+  WCSettings settings = 1;
 }
 
 message WCSettings {

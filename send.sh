@@ -20,6 +20,7 @@ if [[ -t 0 ]]; then
 fi
 
 PROTO="$(dirname $0)/wc3.proto"
+TWC='http://192.168.92.1'
 
 protoc \
   "${PROTO}" \
@@ -28,7 +29,7 @@ protoc \
     -v \
     --data-binary @- \
     -H 'Content-Type: application/octet-stream' \
-    http://192.168.92.1/tedapi/v1 \
+    "${TWC}/tedapi/v1" \
 | protoc \
   "${PROTO}" \
   --decode=AuthEnvelope
